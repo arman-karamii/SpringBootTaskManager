@@ -1,0 +1,178 @@
+---
+title: "Spring Boot Task Management System - Project Overview"
+author: "Armankarami"
+date: "2025-10-13"
+format: html
+toc: true
+toc-depth: 3
+---
+
+# Project Overview
+
+## Introduction
+
+This project is a **Spring Boot Task Management System** that demonstrates modern Java web development practices using the Model-View-Controller (MVC) architectural pattern. The system provides a RESTful API for managing tasks with full CRUD operations.
+
+## Project Information
+
+- **Project Name**: Spring Boot Task Management System
+- **Version**: 1.0.0
+- **Framework**: Spring Boot 4.0.0-M3
+- **Java Version**: 17
+- **Build Tool**: Maven 3.9.11
+- **Architecture**: MVC (Model-View-Controller)
+
+## Key Features
+
+### Core Functionality
+- ✅ **Task Management**: Create, read, update, and delete tasks
+- ✅ **RESTful API**: Full CRUD operations via HTTP endpoints
+- ✅ **MVC Architecture**: Clean separation of concerns
+- ✅ **Test-Driven Development**: Comprehensive unit tests
+- ✅ **In-Memory Storage**: Simple data persistence
+
+### Technical Features
+- ✅ **Spring Boot Auto-Configuration**: Minimal configuration required
+- ✅ **Spring Web MVC**: RESTful web services
+- ✅ **Spring Test**: Comprehensive testing framework
+- ✅ **Maven Wrapper**: Consistent build environment
+- ✅ **JSON Serialization**: Automatic request/response handling
+
+## Project Structure
+
+```
+taskManager/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── example/
+│   │   │           └── taskManager/
+│   │   │               ├── TaskManagementApplication.java
+│   │   │               ├── TaskController.java
+│   │   │               ├── controller/
+│   │   │               │   └── TaskController.java
+│   │   │               ├── model/
+│   │   │               │   └── Task.java
+│   │   │               └── service/
+│   │   │                   └── TaskService.java
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── static/
+│   │       └── templates/
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── example/
+│                   └── taskManager/
+│                       ├── TaskManagementApplicationTests.java
+│                       ├── controller/
+│                       │   └── TaskControllerTest.java
+│                       └── service/
+│                           └── TaskServiceTest.java
+├── target/
+├── documentation/
+├── pom.xml
+├── mvnw
+└── mvnw.cmd
+```
+
+## Architecture Overview
+
+The project follows the **MVC (Model-View-Controller)** architectural pattern:
+
+### Model Layer
+- **Task.java**: Entity class representing a task with properties (id, title, isDone)
+- **Location**: `src/main/java/com/example/taskManager/model/`
+
+### Service Layer (Business Logic)
+- **TaskService.java**: Contains all business logic for task operations
+- **Location**: `src/main/java/com/example/taskManager/service/`
+- **Responsibilities**: Data validation, business rules, data manipulation
+
+### Controller Layer (Presentation)
+- **TaskController.java**: Handles HTTP requests and responses
+- **Location**: `src/main/java/com/example/taskManager/controller/`
+- **Responsibilities**: Request mapping, response formatting, HTTP status codes
+
+## API Endpoints
+
+| Method | Endpoint | Description | Status Code |
+|--------|----------|-------------|-------------|
+| GET | `/tasks` | Get all tasks | 200 OK |
+| POST | `/tasks` | Create new task | 201 Created |
+| GET | `/tasks/{id}` | Get task by ID | 200 OK / 404 Not Found |
+| PUT | `/tasks/{id}` | Update task by ID | 200 OK / 404 Not Found |
+| DELETE | `/tasks/{id}` | Delete task by ID | 204 No Content / 404 Not Found |
+
+## Data Model
+
+### Task Entity
+```json
+{
+  "id": 1,
+  "title": "Sample Task",
+  "isDone": false
+}
+```
+
+**Properties:**
+- `id` (Long): Primary key, auto-generated
+- `title` (String): Task description
+- `isDone` (Boolean): Task completion status
+
+## Testing Strategy
+
+The project implements **Test-Driven Development (TDD)** with comprehensive test coverage:
+
+### Test Structure
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: End-to-end API testing
+- **Test Isolation**: Each test runs independently
+
+### Test Coverage
+- ✅ **TaskService**: 7 test methods
+- ✅ **TaskController**: 6 test methods
+- ✅ **Application**: 1 integration test
+
+## Development Workflow
+
+1. **Write Tests First** (TDD approach)
+2. **Implement Code** to pass tests
+3. **Refactor** for better design
+4. **Document** changes and updates
+
+## Next Steps
+
+This project serves as a foundation for more advanced features:
+
+- [ ] Database integration (JPA/Hibernate)
+- [ ] User authentication and authorization
+- [ ] Task categories and tags
+- [ ] Due dates and reminders
+- [ ] File attachments
+- [ ] Real-time notifications
+- [ ] Frontend web interface
+
+## Getting Started
+
+1. **Prerequisites**: Java 17, Maven 3.9+
+2. **Clone**: Download the project
+3. **Build**: `./mvnw clean compile`
+4. **Test**: `./mvnw test`
+5. **Run**: `./mvnw spring-boot:run`
+6. **Access**: `http://localhost:8080`
+
+## Documentation Structure
+
+This documentation is organized into the following sections:
+
+1. **Project Overview** (this file)
+2. **MVC Architecture** - Detailed architecture explanation
+3. **API Documentation** - Complete API reference
+4. **Setup Guide** - Installation and configuration
+5. **Testing Guide** - Testing strategies and examples
+
+---
+
+*Last updated: 2025-10-13*

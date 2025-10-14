@@ -1,0 +1,344 @@
+---
+title: "MVC Architecture - Spring Boot Task Management System"
+author: "Armankarami"
+date: "2025-10-13"
+format: 
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+---
+
+# MVC Architecture
+
+## Overview
+
+The Spring Boot Task Management System follows the **Model-View-Controller (MVC)** architectural pattern, providing a clean separation of concerns and making the application maintainable, testable, and scalable.
+
+## Architecture Diagram
+
+<div style="text-align: center; margin: 20px 0;">
+<div style="display: inline-block; text-align: left; border: 2px solid #e1f5fe; padding: 20px; border-radius: 10px; background: #f8f9fa;">
+<div style="margin-bottom: 15px; padding: 10px; background: #e3f2fd; border-radius: 5px; text-align: center;">
+<strong>🌐 Client Layer</strong><br>
+HTTP Client
+</div>
+<div style="text-align: center; margin: 10px 0;">⬇️ HTTP Requests</div>
+<div style="margin-bottom: 15px; padding: 10px; background: #f3e5f5; border-radius: 5px; text-align: center;">
+<strong>🎮 Controller Layer</strong><br>
+TaskController
+</div>
+<div style="text-align: center; margin: 10px 0;">⬇️ Business Logic</div>
+<div style="margin-bottom: 15px; padding: 10px; background: #e8f5e8; border-radius: 5px; text-align: center;">
+<strong>⚙️ Service Layer</strong><br>
+TaskService
+</div>
+<div style="text-align: center; margin: 10px 0;">⬇️ Data Operations</div>
+<div style="margin-bottom: 15px; padding: 10px; background: #fff3e0; border-radius: 5px; text-align: center;">
+<strong>📊 Model Layer</strong><br>
+Task Entity
+</div>
+<div style="text-align: center; margin: 10px 0;">⬇️ Persistence</div>
+<div style="padding: 10px; background: #fce4ec; border-radius: 5px; text-align: center;">
+<strong>💾 Data Layer</strong><br>
+In-Memory Storage
+</div>
+</div>
+</div>
+
+## Layer Responsibilities
+
+### 1. Controller Layer (`com.example.taskManager.controller`)
+
+**Purpose**: Handles HTTP requests and responses, acts as the entry point for the application.
+
+**Components**:
+- `TaskController.java`
+
+**Responsibilities**:
+- ✅ **Request Mapping**: Maps HTTP requests to appropriate methods
+- ✅ **Input Validation**: Validates incoming request data
+- ✅ **Response Formatting**: Formats responses as JSON
+- ✅ **HTTP Status Codes**: Returns appropriate status codes
+- ✅ **Error Handling**: Handles exceptions and errors
+
+**Key Features**:
+```java
+@RestController
+@RequestMapping("/tasks")
+public class TaskController {
+    
+    @Autowired
+    private TaskService taskService;
+    
+    @GetMapping
+    public ResponseEntity<List<Task>> getAllTasks() {
+        // Implementation
+    }
+    
+    @PostMapping
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+        // Implementation
+    }
+}
+```
+
+### 2. Service Layer (`com.example.taskManager.service`)
+
+**Purpose**: Contains business logic and orchestrates data operations.
+
+**Components**:
+- `TaskService.java`
+
+**Responsibilities**:
+- ✅ **Business Logic**: Implements core business rules
+- ✅ **Data Validation**: Validates business rules
+- ✅ **Transaction Management**: Manages data consistency
+- ✅ **Data Transformation**: Transforms data between layers
+- ✅ **Error Handling**: Handles business-level errors
+
+**Key Features**:
+```java
+@Service
+public class TaskService {
+    
+    private final List<Task> tasks = new ArrayList<>();
+    private final AtomicLong counter = new AtomicLong();
+    
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasks);
+    }
+    
+    public Task createTask(Task task) {
+        task.setId(counter.incrementAndGet());
+        tasks.add(task);
+        return task;
+    }
+}
+```
+
+### 3. Model Layer (`com.example.taskManager.model`)
+
+**Purpose**: Represents the data structure and business entities.
+
+**Components**:
+- `Task.java`
+
+**Responsibilities**:
+- ✅ **Data Representation**: Defines entity structure
+- ✅ **Data Validation**: Validates entity properties
+- ✅ **Serialization**: Handles JSON serialization/deserialization
+- ✅ **Business Rules**: Encapsulates entity-specific logic
+
+**Key Features**:
+```java
+public class Task {
+    private Long id;
+    private String title;
+    private Boolean isDone;
+    
+    // Constructors, getters, setters
+    public Task() {}
+    
+    public Task(Long id, String title, Boolean isDone) {
+        this.id = id;
+        this.title = title;
+        this.isDone = isDone;
+    }
+}
+```
+
+## Data Flow
+
+### 1. Request Flow (Client → Server)
+
+<div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px 0;">
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #e3f2fd; border-radius: 5px; margin-right: 10px;">
+<strong>Client</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #fff; border-radius: 5px;">
+HTTP POST /tasks
+</div>
+</div>
+<div style="text-align: center; margin: 5px 0;">⬇️</div>
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #f3e5f5; border-radius: 5px; margin-right: 10px;">
+<strong>Controller</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #fff; border-radius: 5px;">
+Validate Request → createTask(task)
+</div>
+</div>
+<div style="text-align: center; margin: 5px 0;">⬇️</div>
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #e8f5e8; border-radius: 5px; margin-right: 10px;">
+<strong>Service</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #fff; border-radius: 5px;">
+Business Logic → Set ID → Store Task
+</div>
+</div>
+<div style="text-align: center; margin: 5px 0;">⬇️</div>
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #fce4ec; border-radius: 5px; margin-right: 10px;">
+<strong>Storage</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #fff; border-radius: 5px;">
+Task Stored
+</div>
+</div>
+<div style="text-align: center; margin: 5px 0;">⬆️</div>
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #e3f2fd; border-radius: 5px; margin-right: 10px;">
+<strong>Client</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #d4edda; border-radius: 5px;">
+HTTP 201 Created
+</div>
+</div>
+</div>
+
+### 2. Response Flow (Server → Client)
+
+<div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px 0;">
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #e3f2fd; border-radius: 5px; margin-right: 10px;">
+<strong>Client</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #fff; border-radius: 5px;">
+HTTP GET /tasks
+</div>
+</div>
+<div style="text-align: center; margin: 5px 0;">⬇️</div>
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #f3e5f5; border-radius: 5px; margin-right: 10px;">
+<strong>Controller</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #fff; border-radius: 5px;">
+getAllTasks()
+</div>
+</div>
+<div style="text-align: center; margin: 5px 0;">⬇️</div>
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #e8f5e8; border-radius: 5px; margin-right: 10px;">
+<strong>Service</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #fff; border-radius: 5px;">
+Retrieve Tasks
+</div>
+</div>
+<div style="text-align: center; margin: 5px 0;">⬇️</div>
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #fce4ec; border-radius: 5px; margin-right: 10px;">
+<strong>Storage</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #fff; border-radius: 5px;">
+Task List
+</div>
+</div>
+<div style="text-align: center; margin: 5px 0;">⬆️</div>
+<div style="display: flex; align-items: center; margin: 10px 0;">
+<div style="width: 100px; text-align: center; padding: 8px; background: #e3f2fd; border-radius: 5px; margin-right: 10px;">
+<strong>Client</strong>
+</div>
+<div style="flex: 1; text-align: center; padding: 8px; background: #d4edda; border-radius: 5px;">
+HTTP 200 OK + JSON
+</div>
+</div>
+</div>
+
+## Design Patterns Used
+
+### 1. Dependency Injection
+- **Spring Framework**: Automatic dependency injection
+- **@Autowired**: Field injection for service dependencies
+- **@Service**: Service layer annotation
+
+### 2. Repository Pattern
+- **TaskService**: Acts as a repository for Task entities
+- **Data Abstraction**: Hides data access implementation details
+- **Interface Segregation**: Clean separation of concerns
+
+### 3. MVC Pattern
+- **Separation of Concerns**: Each layer has distinct responsibilities
+- **Loose Coupling**: Layers communicate through well-defined interfaces
+- **High Cohesion**: Related functionality grouped together
+
+## Benefits of MVC Architecture
+
+### 1. Maintainability
+- ✅ **Clear Structure**: Easy to understand and modify
+- ✅ **Isolated Changes**: Changes in one layer don't affect others
+- ✅ **Code Reusability**: Service layer can be reused
+
+### 2. Testability
+- ✅ **Unit Testing**: Each layer can be tested independently
+- ✅ **Mocking**: Easy to mock dependencies
+- ✅ **Integration Testing**: End-to-end testing possible
+
+### 3. Scalability
+- ✅ **Horizontal Scaling**: Easy to add new controllers
+- ✅ **Vertical Scaling**: Service layer can be optimized
+- ✅ **Technology Independence**: Layers can use different technologies
+
+### 4. Team Development
+- ✅ **Parallel Development**: Teams can work on different layers
+- ✅ **Clear Responsibilities**: Defined roles for each layer
+- ✅ **Code Ownership**: Clear ownership of components
+
+## Testing Strategy
+
+### 1. Unit Tests
+- **TaskServiceTest**: Tests business logic
+- **TaskControllerTest**: Tests HTTP handling
+- **Isolation**: Each test is independent
+
+### 2. Integration Tests
+- **TaskManagerApplicationTests**: Tests entire application
+- **End-to-End**: Tests complete request/response cycle
+
+### 3. Test Data Management
+- **@BeforeEach**: Setup test data
+- **clearAllTasks()**: Reset state between tests
+- **Test Isolation**: No test affects another
+
+## Best Practices Implemented
+
+### 1. Code Organization
+- ✅ **Package Structure**: Logical package organization
+- ✅ **Naming Conventions**: Consistent naming
+- ✅ **Documentation**: Comprehensive comments
+
+### 2. Error Handling
+- ✅ **HTTP Status Codes**: Appropriate status codes
+- ✅ **Exception Handling**: Graceful error handling
+- ✅ **Validation**: Input validation at multiple levels
+
+### 3. Performance
+- ✅ **Efficient Data Structures**: ArrayList for tasks
+- ✅ **Atomic Operations**: Thread-safe ID generation
+- ✅ **Minimal Overhead**: Lightweight implementation
+
+## Future Enhancements
+
+### 1. Database Integration
+- **JPA/Hibernate**: Replace in-memory storage
+- **Repository Pattern**: Implement Spring Data JPA
+- **Transaction Management**: Add @Transactional
+
+### 2. Security
+- **Authentication**: Add user authentication
+- **Authorization**: Role-based access control
+- **Input Validation**: Enhanced validation
+
+### 3. Monitoring
+- **Logging**: Structured logging
+- **Metrics**: Application metrics
+- **Health Checks**: Spring Boot Actuator
+
+---
+
+*Last updated: 2025-10-13*

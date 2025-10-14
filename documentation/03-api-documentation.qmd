@@ -1,0 +1,477 @@
+---
+title: "API Documentation - Spring Boot Task Management System"
+author: "Armankarami"
+date: "2025-10-13"
+format: html
+toc: true
+toc-depth: 3
+---
+
+# API Documentation
+
+## Overview
+
+The Spring Boot Task Management System provides a RESTful API for managing tasks. All endpoints return JSON responses and follow standard HTTP status codes.
+
+## Base URL
+
+```
+http://localhost:8080
+```
+
+## Authentication
+
+Currently, no authentication is required. All endpoints are publicly accessible.
+
+## Data Model
+
+### Task Entity
+
+```json
+{
+  "id": 1,
+  "title": "Sample Task",
+  "isDone": false
+}
+```
+
+**Properties:**
+- `id` (Long): Primary key, auto-generated
+- `title` (String): Task description
+- `isDone` (Boolean): Task completion status
+
+## API Endpoints
+
+### 1. Get All Tasks
+
+**Endpoint**: `GET /tasks`
+
+**Description**: Retrieves all tasks from the system.
+
+**Request**:
+```http
+GET /tasks HTTP/1.1
+Host: localhost:8080
+Accept: application/json
+```
+
+**Response**:
+```json
+[
+  {
+    "id": 1,
+    "title": "Complete project documentation",
+    "isDone": false
+  },
+  {
+    "id": 2,
+    "title": "Review code changes",
+    "isDone": true
+  }
+]
+```
+
+**Status Codes**:
+- `200 OK`: Successfully retrieved tasks
+- `500 Internal Server Error`: Server error
+
+**Example**:
+```bash
+curl -X GET http://localhost:8080/tasks
+```
+
+### 2. Create New Task
+
+**Endpoint**: `POST /tasks`
+
+**Description**: Creates a new task in the system.
+
+**Request**:
+```http
+POST /tasks HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "New Task",
+  "isDone": false
+}
+```
+
+**Response**:
+```json
+{
+  "id": 3,
+  "title": "New Task",
+  "isDone": false
+}
+```
+
+**Status Codes**:
+- `201 Created`: Task successfully created
+- `400 Bad Request`: Invalid request data
+- `500 Internal Server Error`: Server error
+
+**Example**:
+```bash
+curl -X POST http://localhost:8080/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title":"New Task","isDone":false}'
+```
+
+### 3. Get Task by ID
+
+**Endpoint**: `GET /tasks/{id}`
+
+**Description**: Retrieves a specific task by its ID.
+
+**Path Parameters**:
+- `id` (Long): Task ID
+
+**Request**:
+```http
+GET /tasks/1 HTTP/1.1
+Host: localhost:8080
+Accept: application/json
+```
+
+**Response**:
+```json
+{
+  "id": 1,
+  "title": "Complete project documentation",
+  "isDone": false
+}
+```
+
+**Status Codes**:
+- `200 OK`: Task found
+- `404 Not Found`: Task not found
+- `500 Internal Server Error`: Server error
+
+**Example**:
+```bash
+curl -X GET http://localhost:8080/tasks/1
+```
+
+### 4. Update Task
+
+**Endpoint**: `PUT /tasks/{id}`
+
+**Description**: Updates an existing task.
+
+**Path Parameters**:
+- `id` (Long): Task ID
+
+**Request**:
+```http
+PUT /tasks/1 HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Updated Task Title",
+  "isDone": true
+}
+```
+
+**Response**:
+```json
+{
+  "id": 1,
+  "title": "Updated Task Title",
+  "isDone": true
+}
+```
+
+**Status Codes**:
+- `200 OK`: Task successfully updated
+- `404 Not Found`: Task not found
+- `400 Bad Request`: Invalid request data
+- `500 Internal Server Error`: Server error
+
+**Example**:
+```bash
+curl -X PUT http://localhost:8080/tasks/1 \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Updated Task Title","isDone":true}'
+```
+
+### 5. Delete Task
+
+**Endpoint**: `DELETE /tasks/{id}`
+
+**Description**: Deletes a task from the system.
+
+**Path Parameters**:
+- `id` (Long): Task ID
+
+**Request**:
+```http
+DELETE /tasks/1 HTTP/1.1
+Host: localhost:8080
+```
+
+**Response**:
+```
+No Content
+```
+
+**Status Codes**:
+- `204 No Content`: Task successfully deleted
+- `404 Not Found`: Task not found
+- `500 Internal Server Error`: Server error
+
+**Example**:
+```bash
+curl -X DELETE http://localhost:8080/tasks/1
+```
+
+## Error Responses
+
+### Standard Error Format
+
+```json
+{
+  "timestamp": "2025-10-13T15:30:00.000Z",
+  "status": 404,
+  "error": "Not Found",
+  "path": "/tasks/999"
+}
+```
+
+### Common Error Codes
+
+| Status Code | Description | Example |
+|-------------|-------------|---------|
+| 400 | Bad Request | Invalid JSON format |
+| 404 | Not Found | Task ID doesn't exist |
+| 500 | Internal Server Error | Server-side error |
+
+## API Usage Examples
+
+### 1. Complete Task Management Workflow
+
+```bash
+# 1. Get all tasks (initially empty)
+curl -X GET http://localhost:8080/tasks
+
+# 2. Create a new task
+curl -X POST http://localhost:8080/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Learn Spring Boot","isDone":false}'
+
+# 3. Get the created task
+curl -X GET http://localhost:8080/tasks/1
+
+# 4. Update the task
+curl -X PUT http://localhost:8080/tasks/1 \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Learn Spring Boot","isDone":true}'
+
+# 5. Get all tasks to see the update
+curl -X GET http://localhost:8080/tasks
+
+# 6. Delete the task
+curl -X DELETE http://localhost:8080/tasks/1
+
+# 7. Verify deletion
+curl -X GET http://localhost:8080/tasks
+```
+
+### 2. JavaScript/Fetch Examples
+
+```javascript
+// Get all tasks
+fetch('http://localhost:8080/tasks')
+  .then(response => response.json())
+  .then(tasks => console.log(tasks));
+
+// Create a new task
+fetch('http://localhost:8080/tasks', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    title: 'New Task',
+    isDone: false
+  })
+})
+.then(response => response.json())
+.then(task => console.log('Created:', task));
+
+// Update a task
+fetch('http://localhost:8080/tasks/1', {
+  method: 'PUT',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    title: 'Updated Task',
+    isDone: true
+  })
+})
+.then(response => response.json())
+.then(task => console.log('Updated:', task));
+
+// Delete a task
+fetch('http://localhost:8080/tasks/1', {
+  method: 'DELETE'
+})
+.then(response => {
+  if (response.status === 204) {
+    console.log('Task deleted successfully');
+  }
+});
+```
+
+### 3. Python Requests Examples
+
+```python
+import requests
+import json
+
+base_url = 'http://localhost:8080/tasks'
+
+# Get all tasks
+response = requests.get(base_url)
+tasks = response.json()
+print(f"Tasks: {tasks}")
+
+# Create a new task
+new_task = {
+    "title": "Python API Test",
+    "isDone": False
+}
+response = requests.post(base_url, json=new_task)
+created_task = response.json()
+print(f"Created: {created_task}")
+
+# Update the task
+updated_task = {
+    "title": "Python API Test - Updated",
+    "isDone": True
+}
+response = requests.put(f"{base_url}/{created_task['id']}", json=updated_task)
+updated_task = response.json()
+print(f"Updated: {updated_task}")
+
+# Delete the task
+response = requests.delete(f"{base_url}/{created_task['id']}")
+if response.status_code == 204:
+    print("Task deleted successfully")
+```
+
+## Rate Limiting
+
+Currently, no rate limiting is implemented. All endpoints are freely accessible.
+
+## CORS (Cross-Origin Resource Sharing)
+
+CORS is not configured. The API is intended for same-origin requests.
+
+## API Versioning
+
+Currently, no API versioning is implemented. All endpoints use the base path.
+
+## Future Enhancements
+
+### Planned Features
+- [ ] **Authentication**: JWT-based authentication
+- [ ] **Authorization**: Role-based access control
+- [ ] **Pagination**: Paginated task lists
+- [ ] **Filtering**: Filter tasks by status, date, etc.
+- [ ] **Search**: Full-text search functionality
+- [ ] **Validation**: Enhanced input validation
+- [ ] **Rate Limiting**: API rate limiting
+- [ ] **CORS**: Cross-origin resource sharing
+- [ ] **API Versioning**: Versioned API endpoints
+- [ ] **OpenAPI/Swagger**: Interactive API documentation
+
+### Database Integration
+- [ ] **JPA/Hibernate**: Replace in-memory storage
+- [ ] **Database Migrations**: Flyway or Liquibase
+- [ ] **Connection Pooling**: HikariCP configuration
+- [ ] **Transaction Management**: @Transactional annotations
+
+## Testing the API
+
+### 1. Using curl
+
+```bash
+# Test all endpoints
+./test-api.sh
+```
+
+### 2. Using Postman
+
+Import the following collection:
+
+```json
+{
+  "info": {
+    "name": "Task Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Tasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/tasks",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["tasks"]
+        }
+      }
+    }
+  ]
+}
+```
+
+### 3. Using Automated Tests
+
+Run the comprehensive test suite:
+
+```bash
+./mvnw test
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Connection Refused**
+   - Ensure the application is running on port 8080
+   - Check if another service is using the port
+
+2. **404 Not Found**
+   - Verify the endpoint URL is correct
+   - Check if the task ID exists
+
+3. **400 Bad Request**
+   - Validate JSON format
+   - Check required fields are present
+
+4. **500 Internal Server Error**
+   - Check application logs
+   - Verify server configuration
+
+### Debug Mode
+
+Enable debug logging by adding to `application.properties`:
+
+```properties
+logging.level.com.example.taskManager=DEBUG
+logging.level.org.springframework.web=DEBUG
+```
+
+---
+
+*Last updated: 2025-10-13*

@@ -1,0 +1,604 @@
+---
+title: "Setup Guide - Spring Boot Task Management System"
+author: "Armankarami"
+date: "2025-10-13"
+format: html
+toc: true
+toc-depth: 3
+---
+
+# Setup Guide
+
+## Prerequisites
+
+### Required Software
+
+| Software | Version | Description | Download Link |
+|----------|---------|-------------|---------------|
+| **Java** | 17+ | Java Development Kit | [OpenJDK 17](https://openjdk.org/projects/jdk/17/) |
+| **Maven** | 3.9+ | Build Tool | [Apache Maven](https://maven.apache.org/download.cgi) |
+| **Git** | 2.0+ | Version Control | [Git](https://git-scm.com/downloads) |
+
+### Optional Software
+
+| Software | Version | Description | Download Link |
+|----------|---------|-------------|---------------|
+| **IntelliJ IDEA** | 2025.2+ | IDE | [IntelliJ IDEA](https://www.jetbrains.com/idea/) |
+| **Postman** | Latest | API Testing | [Postman](https://www.postman.com/downloads/) |
+| **curl** | Latest | Command Line Tool | Included in most systems |
+
+## Installation Steps
+
+### 1. Java Installation
+
+#### Windows
+```powershell
+# Download OpenJDK 17 from https://openjdk.org/projects/jdk/17/
+# Install and set JAVA_HOME environment variable
+# Add %JAVA_HOME%\bin to PATH
+
+# Verify installation
+java -version
+javac -version
+```
+
+#### macOS
+```bash
+# Using Homebrew (recommended)
+brew install openjdk@17
+
+# Add to PATH
+echo 'export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+# Verify installation
+java -version
+javac -version
+```
+
+#### Linux (Ubuntu/Debian)
+```bash
+# Update package list
+sudo apt update
+
+# Install OpenJDK 17
+sudo apt install openjdk-17-jdk
+
+# Verify installation
+java -version
+javac -version
+```
+
+### 2. Maven Installation
+
+#### Windows
+```powershell
+# Download Maven from https://maven.apache.org/download.cgi
+# Extract to C:\Program Files\Apache\maven
+# Set MAVEN_HOME environment variable
+# Add %MAVEN_HOME%\bin to PATH
+
+# Verify installation
+mvn -version
+```
+
+#### macOS
+```bash
+# Using Homebrew (recommended)
+brew install maven
+
+# Verify installation
+mvn -version
+```
+
+#### Linux (Ubuntu/Debian)
+```bash
+# Install Maven
+sudo apt install maven
+
+# Verify installation
+mvn -version
+```
+
+### 3. Project Setup
+
+#### Clone the Repository
+```bash
+# Clone the project
+git clone <repository-url>
+cd taskManager
+
+# Verify project structure
+ls -la
+```
+
+#### Project Structure Verification
+```
+taskManager/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── example/
+│   │   │           └── taskManager/
+│   │   │               ├── TaskManagementApplication.java
+│   │   │               ├── TaskController.java
+│   │   │               ├── controller/
+│   │   │               │   └── TaskController.java
+│   │   │               ├── model/
+│   │   │               │   └── Task.java
+│   │   │               └── service/
+│   │   │                   └── TaskService.java
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── example/
+│                   └── taskManager/
+│                       ├── TaskManagementApplicationTests.java
+│                       ├── controller/
+│                       │   └── TaskControllerTest.java
+│                       └── service/
+│                           └── TaskServiceTest.java
+├── target/
+├── documentation/
+├── pom.xml
+├── mvnw
+└── mvnw.cmd
+```
+
+## Building the Project
+
+### 1. Clean and Compile
+
+```bash
+# Clean previous builds
+./mvnw clean
+
+# Compile the project
+./mvnw compile
+
+# Verify compilation
+ls target/classes/com/example/taskManager/
+```
+
+### 2. Run Tests
+
+```bash
+# Run all tests
+./mvnw test
+
+# Run specific test class
+./mvnw test -Dtest=TaskControllerTest
+
+# Run tests with coverage
+./mvnw test jacoco:report
+```
+
+### 3. Package the Application
+
+```bash
+# Create executable JAR
+./mvnw package
+
+# Verify JAR creation
+ls target/*.jar
+```
+
+## Running the Application
+
+### 1. Development Mode
+
+```bash
+# Start the application
+./mvnw spring-boot:run
+
+# Application will start on http://localhost:8080
+# Press Ctrl+C to stop
+```
+
+### 2. Production Mode
+
+```bash
+# Run the JAR file
+java -jar target/taskManager-0.0.1-SNAPSHOT.jar
+
+# Application will start on http://localhost:8080
+# Press Ctrl+C to stop
+```
+
+### 3. Background Mode
+
+```bash
+# Run in background (Unix/Linux/macOS)
+nohup java -jar target/taskManager-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+
+# Check if running
+ps aux | grep java
+
+# Stop the application
+pkill -f taskManager
+```
+
+## Configuration
+
+### 1. Application Properties
+
+The application uses `src/main/resources/application.properties` for configuration:
+
+```properties
+# Server configuration
+server.port=8080
+server.servlet.context-path=/
+
+# Logging configuration
+logging.level.com.example.taskManager=INFO
+logging.level.org.springframework.web=INFO
+
+# Application configuration
+spring.application.name=taskManager
+```
+
+### 2. Environment Variables
+
+You can override configuration using environment variables:
+
+```bash
+# Change port
+export SERVER_PORT=9090
+./mvnw spring-boot:run
+
+# Change logging level
+export LOGGING_LEVEL_COM_EXAMPLE_TASKMANAGER=DEBUG
+./mvnw spring-boot:run
+```
+
+### 3. Profile Configuration
+
+Create profile-specific configuration files:
+
+```properties
+# application-dev.properties
+server.port=8080
+logging.level.com.example.taskManager=DEBUG
+
+# application-prod.properties
+server.port=80
+logging.level.com.example.taskManager=WARN
+```
+
+Run with specific profile:
+
+```bash
+./mvnw spring-boot:run -Dspring.profiles.active=dev
+```
+
+## IDE Setup
+
+### 1. IntelliJ IDEA
+
+#### Import Project
+1. Open IntelliJ IDEA
+2. Select "Open" or "Import Project"
+3. Navigate to the project directory
+4. Select `pom.xml`
+5. Choose "Import project from external model" → "Maven"
+6. Click "Next" and "Finish"
+
+#### Configure Run Configuration
+1. Go to Run → Edit Configurations
+2. Click "+" → "Spring Boot"
+3. Set:
+   - **Name**: `TaskManagementApplication`
+   - **Main class**: `com.example.taskManager.TaskManagementApplication`
+   - **Module**: `taskManager`
+4. Click "OK"
+
+#### Run the Application
+1. Select the run configuration
+2. Click the "Run" button
+3. Application starts on http://localhost:8080
+
+### 2. Eclipse
+
+#### Import Project
+1. Open Eclipse
+2. File → Import → Existing Maven Projects
+3. Select the project directory
+4. Click "Finish"
+
+#### Run the Application
+1. Right-click on `TaskManagementApplication.java`
+2. Run As → Java Application
+3. Application starts on http://localhost:8080
+
+### 3. VS Code
+
+#### Install Extensions
+- Extension Pack for Java
+- Spring Boot Extension Pack
+
+#### Open Project
+1. File → Open Folder
+2. Select the project directory
+3. VS Code will detect Maven project
+
+#### Run the Application
+1. Open `TaskManagementApplication.java`
+2. Click "Run" above the main method
+3. Application starts on http://localhost:8080
+
+## Verification
+
+### 1. Health Check
+
+```bash
+# Check if application is running
+curl http://localhost:8080/
+
+# Expected response: "Hello World!"
+```
+
+### 2. API Endpoints
+
+```bash
+# Test all endpoints
+curl http://localhost:8080/tasks
+curl -X POST http://localhost:8080/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Test Task","isDone":false}'
+curl http://localhost:8080/tasks/1
+curl -X PUT http://localhost:8080/tasks/1 \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Updated Task","isDone":true}'
+curl -X DELETE http://localhost:8080/tasks/1
+```
+
+### 3. Logs Verification
+
+Check application logs for:
+- Application startup
+- Request handling
+- Error messages
+
+```bash
+# View logs in real-time
+tail -f app.log
+
+# Search for errors
+grep -i error app.log
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### 1. Port Already in Use
+
+**Error**: `Port 8080 was already in use`
+
+**Solution**:
+```bash
+# Find process using port 8080
+lsof -i :8080
+
+# Kill the process
+kill -9 <PID>
+
+# Or use different port
+export SERVER_PORT=9090
+./mvnw spring-boot:run
+```
+
+#### 2. Java Version Mismatch
+
+**Error**: `Unsupported major.minor version`
+
+**Solution**:
+```bash
+# Check Java version
+java -version
+
+# Ensure Java 17+ is installed
+# Update JAVA_HOME if necessary
+```
+
+#### 3. Maven Build Failures
+
+**Error**: `Failed to execute goal`
+
+**Solution**:
+```bash
+# Clean and rebuild
+./mvnw clean compile
+
+# Update dependencies
+./mvnw dependency:resolve
+
+# Check for conflicts
+./mvnw dependency:tree
+```
+
+#### 4. Test Failures
+
+**Error**: `Tests run: X, Failures: Y`
+
+**Solution**:
+```bash
+# Run tests with debug info
+./mvnw test -X
+
+# Run specific test
+./mvnw test -Dtest=TaskControllerTest
+
+# Skip tests
+./mvnw package -DskipTests
+```
+
+### Performance Issues
+
+#### 1. Slow Startup
+
+**Symptoms**: Application takes long time to start
+
+**Solutions**:
+- Increase JVM memory: `-Xmx512m`
+- Use JVM flags: `-XX:TieredStopAtLevel=1`
+- Profile startup time
+
+#### 2. Memory Issues
+
+**Symptoms**: OutOfMemoryError
+
+**Solutions**:
+- Increase heap size: `-Xmx1024m`
+- Monitor memory usage
+- Check for memory leaks
+
+### Network Issues
+
+#### 1. Connection Refused
+
+**Error**: `Connection refused`
+
+**Solutions**:
+- Check if application is running
+- Verify port configuration
+- Check firewall settings
+
+#### 2. CORS Issues
+
+**Error**: `CORS policy blocked`
+
+**Solutions**:
+- Add CORS configuration
+- Use same-origin requests
+- Configure proxy
+
+## Production Deployment
+
+### 1. Docker Deployment
+
+#### Create Dockerfile
+```dockerfile
+FROM openjdk:17-jdk-slim
+COPY target/taskManager-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+
+#### Build and Run
+```bash
+# Build Docker image
+docker build -t taskManager .
+
+# Run container
+docker run -p 8080:8080 taskManager
+```
+
+### 2. Systemd Service
+
+#### Create Service File
+```ini
+[Unit]
+Description=TaskManager Application
+After=network.target
+
+[Service]
+Type=simple
+User=app
+ExecStart=/usr/bin/java -jar /opt/taskManager/app.jar
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+#### Enable Service
+```bash
+# Copy service file
+sudo cp taskManager.service /etc/systemd/system/
+
+# Reload systemd
+sudo systemctl daemon-reload
+
+# Enable and start service
+sudo systemctl enable taskManager
+sudo systemctl start taskManager
+```
+
+### 3. Cloud Deployment
+
+#### AWS EC2
+1. Launch EC2 instance
+2. Install Java 17
+3. Upload JAR file
+4. Configure security groups
+5. Start application
+
+#### Google Cloud Platform
+1. Create Compute Engine instance
+2. Install Java 17
+3. Upload JAR file
+4. Configure firewall rules
+5. Start application
+
+## Monitoring and Maintenance
+
+### 1. Health Checks
+
+```bash
+# Application health
+curl http://localhost:8080/actuator/health
+
+# Application info
+curl http://localhost:8080/actuator/info
+```
+
+### 2. Log Management
+
+```bash
+# Rotate logs
+logrotate /etc/logrotate.d/taskManager
+
+# Monitor logs
+tail -f /var/log/taskManager/application.log
+```
+
+### 3. Performance Monitoring
+
+```bash
+# Monitor JVM
+jstat -gc <PID>
+
+# Monitor memory
+jmap -histo <PID>
+
+# Monitor threads
+jstack <PID>
+```
+
+## Next Steps
+
+After successful setup:
+
+1. **Explore the API**: Use Postman or curl to test endpoints
+2. **Read Documentation**: Review all documentation files
+3. **Run Tests**: Execute the test suite
+4. **Modify Code**: Make changes and test
+5. **Deploy**: Follow production deployment guide
+
+## Support
+
+For issues and questions:
+
+1. **Check Logs**: Review application logs
+2. **Read Documentation**: Consult this guide
+3. **Search Issues**: Look for similar problems
+4. **Create Issue**: Report bugs or request features
+
+---
+
+*Last updated: 2025-10-13*
